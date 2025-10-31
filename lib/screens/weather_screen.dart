@@ -1,10 +1,17 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:skypulse/resuable_content.dart';
 import 'package:skypulse/services/weather.dart';
 
 class WeatherScreen extends StatefulWidget {
-  const WeatherScreen({super.key, required this.weatherData});
+  const WeatherScreen({
+    super.key,
+    required this.weatherData,
+    required this.forecastData,
+  });
 
+  final Map<String, dynamic> forecastData;
   final dynamic weatherData;
 
   @override
@@ -21,15 +28,19 @@ class _WeatherScreenState extends State<WeatherScreen> {
   double visibility = 0;
   int humidity = 0;
 
+  String fourDayForecast = '';
+  String fourTempForecast = '';
+  String fourIconForecast = '';
+
   WeatherModel weatherModel = WeatherModel();
 
   @override
   void initState() {
     super.initState();
-    updateUI(widget.weatherData);
+    updateUI(widget.weatherData, widget.forecastData);
   }
 
-  void updateUI(dynamic weatherData) {
+  void updateUI(dynamic weatherData, Map<String, dynamic> forecastData) {
     setState(() {
       if (weatherData == null) {
         temperature = 0;
@@ -37,6 +48,9 @@ class _WeatherScreenState extends State<WeatherScreen> {
         description = 'Unable to get weather data';
         cityName = '';
         countryName = '';
+        fourDayForecast = '';
+        fourTempForecast = '';
+        fourIconForecast = '';
         return;
       }
 
@@ -54,6 +68,9 @@ class _WeatherScreenState extends State<WeatherScreen> {
       pressure = weatherData['main']['pressure'];
       visibility = weatherData['visibility'] / 1000; // Convert to km
       humidity = weatherData['main']['humidity'];
+      fourDayForecast = forecastData["day0"]["date"];
+      fourTempForecast = forecastData["day0"]["temp"].toString();
+      fourIconForecast = forecastData["day0"]["icon"];
     });
   }
 
@@ -170,26 +187,42 @@ class _WeatherScreenState extends State<WeatherScreen> {
                     flex: 6,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: const [
+                      children: [
                         HourlyForecastItem(
-                          time: "1 PM",
-                          icon: Icons.wb_sunny,
-                          temperature: "25°C",
+                          day: fourDayForecast,
+                          icon:
+                              NetworkImage(
+                                    'https://openweathermap.org/img/wn/$fourIconForecast@2x.png',
+                                  )
+                                  as IconData,
+                          temperature: "$fourTempForecast°C",
                         ),
                         HourlyForecastItem(
-                          time: "2 PM",
-                          icon: Icons.cloud,
-                          temperature: "24°C",
+                          day: fourDayForecast,
+                          icon:
+                              NetworkImage(
+                                    'https://openweathermap.org/img/wn/$fourIconForecast@2x.png',
+                                  )
+                                  as IconData,
+                          temperature: "$fourTempForecast°C",
                         ),
                         HourlyForecastItem(
-                          time: "3 PM",
-                          icon: Icons.grain,
-                          temperature: "22°C",
+                          day: fourDayForecast,
+                          icon:
+                              NetworkImage(
+                                    'https://openweathermap.org/img/wn/$fourIconForecast@2x.png',
+                                  )
+                                  as IconData,
+                          temperature: "$fourTempForecast°C",
                         ),
                         HourlyForecastItem(
-                          time: "4 PM",
-                          icon: Icons.wb_cloudy,
-                          temperature: "21°C",
+                          day: fourDayForecast,
+                          icon:
+                              NetworkImage(
+                                    'https://openweathermap.org/img/wn/$fourIconForecast@2x.png',
+                                  )
+                                  as IconData,
+                          temperature: "$fourTempForecast°C",
                         ),
                       ],
                     ),

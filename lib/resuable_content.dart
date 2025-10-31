@@ -24,18 +24,11 @@ class WeatherInfoItem extends StatelessWidget {
 }
 
 class HourlyForecastItem extends StatelessWidget {
-  final String? time;
+  final String? day;
   final IconData? icon;
   final String? temperature;
-  final bool isNow;
 
-  const HourlyForecastItem({
-    super.key,
-    this.time,
-    this.icon,
-    this.temperature,
-    this.isNow = true,
-  });
+  const HourlyForecastItem({super.key, this.day, this.icon, this.temperature});
 
   @override
   Widget build(BuildContext context) {
@@ -43,9 +36,7 @@ class HourlyForecastItem extends StatelessWidget {
       width: 70,
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
       decoration: BoxDecoration(
-        color: isNow
-            ? Colors.white.withValues(alpha: 0.3)
-            : Colors.white.withValues(alpha: 0.2),
+        color: Colors.white.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(40),
         border: Border.all(
           color: Colors.white.withValues(alpha: 0.3),
@@ -59,22 +50,22 @@ class HourlyForecastItem extends StatelessWidget {
         children: [
           Text(
             // isNow ?
-            'Now',
+            '$day',
             // : time,
             style: TextStyle(
-              color: Colors.white,
-              fontSize: isNow ? 16 : 14,
-              fontWeight: isNow ? FontWeight.w600 : FontWeight.w500,
+              color: Colors.black,
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
             ),
           ),
           const SizedBox(height: 12),
-          Icon(icon, color: isNow ? Colors.amber : Colors.white, size: 40),
+          Icon(icon, color: Colors.white, size: 40),
           const SizedBox(height: 12),
           Text(
-            "",
+            '$temperature',
             // temperature,
             style: const TextStyle(
-              color: Colors.white,
+              color: Colors.black,
               fontSize: 18,
               fontWeight: FontWeight.w600,
             ),
