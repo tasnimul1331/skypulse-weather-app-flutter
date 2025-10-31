@@ -20,14 +20,13 @@ class _LoadingScreenState extends State<LoadingScreen> {
   Future<void> _loadWeatherData() async {
     WeatherModel weatherModel = WeatherModel();
     var weatherData = await weatherModel.getLocationWeather();
-    Map<String, dynamic> forecastData = await weatherModel.getLocationWeatherForecast();
-    Navigator.push(
+    Map<String, dynamic> forecastData = await weatherModel
+        .getLocationWeatherForecast();
+    Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) => WeatherScreen(
-          weatherData: weatherData,
-          forecastData: forecastData,
-        ),
+        builder: (context) =>
+            WeatherScreen(weatherData: weatherData, forecastData: forecastData),
       ),
     );
   }

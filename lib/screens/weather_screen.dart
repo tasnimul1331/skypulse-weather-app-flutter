@@ -17,6 +17,7 @@ class WeatherScreen extends StatefulWidget {
 }
 
 class _WeatherScreenState extends State<WeatherScreen> {
+  List<String> days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   int temperature = 0;
   String weatherIcon = '';
   String cityName = '';
@@ -25,6 +26,8 @@ class _WeatherScreenState extends State<WeatherScreen> {
   int pressure = 0;
   double visibility = 0;
   int humidity = 0;
+  String toDateForecast = '';
+  String toDayForecast = '';
 
   String fourDayForecast = '';
   String fourTempForecast = '';
@@ -49,6 +52,10 @@ class _WeatherScreenState extends State<WeatherScreen> {
         fourDayForecast = '';
         fourTempForecast = '';
         fourIconForecast = '';
+        toDayForecast = '';
+        pressure = 0;
+        visibility = 0;
+        humidity = 0;
         return;
       }
 
@@ -56,7 +63,9 @@ class _WeatherScreenState extends State<WeatherScreen> {
       temperature = temp.toInt();
       cityName = weatherData['name'];
       countryName = weatherData['sys']['country'];
-      description = weatherData['weather'][0]['description'];
+      description = weatherModel.getMessage(
+        temperature,
+      ); // Get message based on temperature
 
       // 👇 get icon code safely
       String iconCode = weatherData['weather'][0]['icon'];
@@ -66,9 +75,12 @@ class _WeatherScreenState extends State<WeatherScreen> {
       pressure = weatherData['main']['pressure'];
       visibility = weatherData['visibility'] / 1000; // Convert to km
       humidity = weatherData['main']['humidity'];
-      fourDayForecast = forecastData["day0"]["date"];
-      fourTempForecast = forecastData["day0"]["temp"].toString();
-      fourIconForecast = forecastData["day0"]["icon"];
+      DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(
+        weatherData['dt'] * 1000,
+      );
+      toDateForecast = "${dateTime.day}";
+
+      toDayForecast = days[dateTime.weekday % 7];
     });
   }
 
@@ -111,15 +123,19 @@ class _WeatherScreenState extends State<WeatherScreen> {
                     child: Text(
                       '$temperature°',
                       style: const TextStyle(
-                        fontSize: 70,
+                        fontSize: 58,
                         color: Colors.black,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
                   ),
-                  Text(
-                    description,
-                    style: TextStyle(fontSize: 34, color: Colors.grey[600]),
+                  Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 40.0),
+                    child: Text(
+                      description,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 18, color: Colors.grey[600]),
+                    ),
                   ),
                 ],
               ),
@@ -145,11 +161,11 @@ class _WeatherScreenState extends State<WeatherScreen> {
                   //* Today text
                   Expanded(
                     flex: 1,
-                    child: const Padding(
-                      padding: EdgeInsets.only(top: 15.0, left: 15.0),
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 15.0, left: 15.0),
                       child: Text(
-                        "Today",
-                        style: TextStyle(
+                        "Today, $toDateForecast $toDayForecast",
+                        style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                         ),
@@ -182,47 +198,32 @@ class _WeatherScreenState extends State<WeatherScreen> {
                   ),
                   //* Hourly forecast
                   Expanded(
-                    flex: 6,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        HourlyForecastItem(
-                          day: fourDayForecast,
-                          icon:
-                              NetworkImage(
-                                    'https://openweathermap.org/img/wn/$fourIconForecast@2x.png',
-                                  )
-                                  as IconData,
-                          temperature: "$fourTempForecast°C",
+                    flex: 5,
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: List.generate(
+                          widget
+                              .forecastData
+                              .length, // dynamically based on your map size
+                          (index) {
+                            var key = "day$index";
+                            var data = widget.forecastData[key];
+                            if (data == null) return SizedBox();
+
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8.0,
+                              ),
+                              child: HourlyForecastItem(
+                                day: data["time"],
+                                condition: data["id"],
+                                temperature: "${data["temp"].toInt()}°C",
+                              ),
+                            );
+                          },
                         ),
-                        HourlyForecastItem(
-                          day: fourDayForecast,
-                          icon:
-                              NetworkImage(
-                                    'https://openweathermap.org/img/wn/$fourIconForecast@2x.png',
-                                  )
-                                  as IconData,
-                          temperature: "$fourTempForecast°C",
-                        ),
-                        HourlyForecastItem(
-                          day: fourDayForecast,
-                          icon:
-                              NetworkImage(
-                                    'https://openweathermap.org/img/wn/$fourIconForecast@2x.png',
-                                  )
-                                  as IconData,
-                          temperature: "$fourTempForecast°C",
-                        ),
-                        HourlyForecastItem(
-                          day: fourDayForecast,
-                          icon:
-                              NetworkImage(
-                                    'https://openweathermap.org/img/wn/$fourIconForecast@2x.png',
-                                  )
-                                  as IconData,
-                          temperature: "$fourTempForecast°C",
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                 ],

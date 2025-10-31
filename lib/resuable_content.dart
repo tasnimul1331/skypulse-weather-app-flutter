@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:skypulse/services/weather.dart';
 
 // Add this as a separate widget (outside your _WeatherScreenState class)
 class WeatherInfoItem extends StatelessWidget {
@@ -25,13 +26,20 @@ class WeatherInfoItem extends StatelessWidget {
 
 class HourlyForecastItem extends StatelessWidget {
   final String? day;
-  final IconData? icon;
   final String? temperature;
+  final int? condition; // Placeholder condition code
 
-  const HourlyForecastItem({super.key, this.day, this.icon, this.temperature});
+  const HourlyForecastItem({
+    super.key,
+    this.day,
+    this.temperature,
+    this.condition,
+  });
 
   @override
   Widget build(BuildContext context) {
+    WeatherModel weatherModel = WeatherModel();
+
     return Container(
       width: 70,
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
@@ -54,19 +62,24 @@ class HourlyForecastItem extends StatelessWidget {
             // : time,
             style: TextStyle(
               color: Colors.black,
-              fontSize: 16,
+              fontSize: 14,
               fontWeight: FontWeight.w500,
             ),
           ),
           const SizedBox(height: 12),
-          Icon(icon, color: Colors.white, size: 40),
+
+          Text(
+            weatherModel.getWeatherIcon(
+              condition ?? 800,
+            ), // Default to clear if null
+          ),
           const SizedBox(height: 12),
           Text(
             '$temperature',
             // temperature,
             style: const TextStyle(
               color: Colors.black,
-              fontSize: 18,
+              fontSize: 16,
               fontWeight: FontWeight.w600,
             ),
           ),
