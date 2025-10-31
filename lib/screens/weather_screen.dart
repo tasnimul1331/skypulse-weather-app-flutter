@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:skypulse/resuable_content.dart';
 import 'package:skypulse/services/weather.dart';
