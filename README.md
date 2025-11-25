@@ -2,7 +2,7 @@
 
 Lightweight, localised weather app built with Flutter — focused on Bangladesh weather and UX-friendly Bengali messages.
 
-![App preview](assets/images/preview.png)
+![App preview](assets/images/preview.jpg)
 
 ## Table of contents
 
